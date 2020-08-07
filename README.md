@@ -1,5 +1,5 @@
 
-## This App can search a GitHub user  using the GitHub Public API built it help of ReactJS Library.
+## This React.js App can search a GitHub user  using the GitHub Public API.
 
 ## Available Scripts
 
