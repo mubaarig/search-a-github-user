@@ -1,10 +1,11 @@
 # This React.js App can search a GitHub user using the GitHub Public API.
+#Search a Github User App is  React App using API to query and fetch data.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ![alt text](./public/search-a-github-user.PNG)
 
 ## Available Scripts
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 In the project directory, you can run:
 
