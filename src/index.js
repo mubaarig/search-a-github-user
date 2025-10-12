@@ -10,6 +10,7 @@ root.render(
     <App />
   </React.StrictMode>
 );
+//test comment
 
 // Measure performance (optional):
 // reportWebVitals(console.log);
