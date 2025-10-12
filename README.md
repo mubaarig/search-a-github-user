@@ -1,161 +1,73 @@
-# Search a GitHub User
+# This React.js App can search a GitHub user using the GitHub Public API.
+Search a Github User App is  React App using API to query and fetch data.
 
-A tiny React + Tailwind app that looks up public profiles from the **GitHub Users API** and renders them as clean, responsive cards.
 
-> Type a username, hit **Search**, and get the profile: avatar, name/login, bio, company, location, and quick stats (repos, followers, following).
+![alt text](./public/search-a-github-user.PNG)
 
----
+## Available Scripts
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## ✨ Features
+In the project directory, you can run:
 
-- **Fast search** by GitHub username
-- **Profile card** with links to GitHub profile and personal website
-- **Error handling** for user-not-found and rate limit responses
-- **Accessible**: keyboard-friendly, `aria-live` updates for loading/errors
-- **Responsive grid** (multiple cards; new searches appear at the top)
-- **Duplicate-safe** (re-searching the same user updates the card instead of adding another)
+### `npm start`
 
-> _Note:_ Depending on the variant you use, the project calls the API with either the native **Fetch API** or **axios**. If you use the axios version, install it: `npm i axios`.
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
----
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-## 🧰 Tech Stack
+### `npm test`
 
-- **React** (Create React App or Vite compatible)
-- **Tailwind CSS**
-- **Fetch API** (or **axios** in the alternative `Form.js`)
-- **Jest + React Testing Library** (sample test included)
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
----
+### `npm run build`
 
-## 🚀 Quick Start
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-```bash
-# 1) Install dependencies
-npm install
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-# 2) Start the dev server
-npm start
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-# 3) Run tests (optional)
-npm test
+### `npm run eject`
 
-# 4) Build for production
-npm run build
-```
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-The app will start on `http://localhost:3000` (CRA default).
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
----
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-## ⚙️ Configuration (Optional: Higher Rate Limits)
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-Unauthenticated calls to the GitHub API are limited to **~60 requests/hour per IP**.  
-For heavier usage, create a **fine-grained personal access token** on GitHub and expose it to the app:
+## Learn More
 
-1. Create `.env` in the project root:
-   ```dotenv
-   REACT_APP_GITHUB_TOKEN=ghp_yourTokenHere
-   ```
-2. Restart the dev server.
-3. In `Form.js`, include the header when calling the API:
-   ```js
-   const headers = {
-     Accept: "application/vnd.github+json",
-     ...(process.env.REACT_APP_GITHUB_TOKEN && {
-       Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}`
-     })
-   };
-   // pass `headers` to fetch/axios
-   ```
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-> _Never commit real tokens._ Add `.env` to `.gitignore`.
+To learn React, check out the [React documentation](https://reactjs.org/).
 
----
+### Code Splitting
 
-## 🧭 How It Works
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-- `Form` handles input, validates it, then queries `https://api.github.com/users/:username`.
-- On success, it calls `onSubmit(user)`.
-- `App` stores users in state (new results go to the top; existing users are updated).
-- `CardList` lays out results in a responsive grid.
-- Each `Card` renders the profile details and helpful links.
+### Analyzing the Bundle Size
 
----
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-## 📁 Project Structure
+### Making a Progressive Web App
 
-```
-src/
-├─ App.js
-├─ index.js
-├─ index.css
-├─ App.css
-└─ components/
-   ├─ Form.js
-   ├─ CardList.js
-   └─ Card.js
-```
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-> Your project may include additional files like `setupTests.js`, `reportWebVitals.js`, etc. (CRA defaults).
+### Advanced Configuration
 
----
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-## 🧪 Testing
+### Deployment
 
-A simple test asserts that the header is rendered:
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-```js
-import { render, screen } from "@testing-library/react";
-import App from "./App";
+### `npm run build` fails to minify
 
-test("renders the app header", () => {
-  render(<App />);
-  const header = screen.getByRole("heading", { name: /Search a GitHub User/i });
-  expect(header).toBeInTheDocument();
-});
-```
-
-Run tests with:
-```bash
-npm test
-```
-
----
-
-## 🛠 Troubleshooting
-
-- **User not found (404):** Double-check the username.
-- **Rate limit (403):** Add a token (see _Configuration_) or wait a bit.
-- **CORS / Network errors:** Ensure you’re online and `api.github.com` is reachable.
-- **Tailwind styles missing:** Verify Tailwind is properly set up in `index.css` and PostCSS config.
-
----
-
-## 📦 Deploy
-
-- **Vercel / Netlify:** Deploy the repo; use the default React build command.
-- **GitHub Pages:** `npm run build` then publish the `build/` folder.
-
----
-
-## 🗺 Roadmap (Nice-to-haves)
-
-- Recent searches history
-- Dark mode toggle
-- Repo previews (latest pinned/public repos)
-- Keyboard shortcuts (e.g., `/` to focus the search box)
-
----
-
-## 📄 License
-
-MIT — or adapt to your needs. If this is for a portfolio piece, you can omit the license or choose a more suitable one.
-
----
-
-## 🙌 Acknowledgements
-
-- GitHub Users API
-- Tailwind CSS
-- React Testing Library
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
