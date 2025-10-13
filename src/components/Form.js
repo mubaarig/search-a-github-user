@@ -1,40 +1,105 @@
-import React, {useState} from "react";
-import { GoOctoface } from "react-icons/go";
-import axios from "axios";
+import React, { useState } from "react";
 
-const Form = (props) => {
-    const [username, setUsername] = useState('');
-
-    const submitHandler = (event) => {
-        event.preventDefault();
-        axios.get(`https://api.github.com/users/${username}`).then((resp) =>{
-        props.onSubmit(resp.data)
-        });
-        setUsername('');
-
-    }     
-
-    return (
-        <form onSubmit={submitHandler} className="w-full max-w-sm mx-auto">
-            <div className='mt-10 flex'>
-                <GoOctoface  size={50} className="mr-5"/>
-                <input
-                    type='text'
-                    placeholder='Search a GitHub username'
-                    className='form-input block w-full py-2 px-5 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150'
-                    required
-                    value={username}
-                    onChange={(event)=>setUsername(event.target.value)}
-                />
-                <button
-                    type='submit'
-                    className='ml-2 py-2 px-3 border border-blue-300 rounded-md text-sm leading-3 font-large text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out'
-                >
-                    Search
-                </button>
-            </div>
-        </form>
-    )
+function SearchIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M21 21l-4.35-4.35m1.1-4.4a6.75 6.75 0 11-13.5 0 6.75 6.75 0 0113.5 0z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
 }
 
-export default Form
+function XIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+export default function Form({ onSubmit }) {
+  const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    const u = username.trim();
+    if (!u) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`https://api.github.com/users/${encodeURIComponent(u)}`, {
+        headers: { Accept: "application/vnd.github+json" },
+      });
+      if (res.status === 404) {
+        setError("User not found.");
+        return;
+      }
+      if (res.status === 403) {
+        setError("Rate limit exceeded. Try again later.");
+        return;
+      }
+      if (!res.ok) {
+        setError(`GitHub error: ${res.status}`);
+        return;
+      }
+      const data = await res.json();
+      onSubmit(data);
+      setUsername("");
+    } catch (err) {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto max-w-2xl">
+      <div className="relative rounded-2xl bg-white ring-1 ring-gray-950/5 shadow-sm dark:bg-gray-900 dark:ring-white/10">
+        <div className="flex items-center">
+          <div className="pl-4 text-gray-500 dark:text-gray-400">
+            <SearchIcon className="h-5 w-5" />
+          </div>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter GitHub username…"
+            aria-label="GitHub username"
+            className="w-full bg-transparent px-3 py-3 text-base outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100"
+          />
+          {username && !loading && (
+            <button
+              type="button"
+              onClick={() => setUsername("")}
+              className="mr-2 rounded-full p-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Clear username"
+              title="Clear"
+            >
+              <XIcon className="h-4 w-4" />
+            </button>
+          )}
+          <button
+            type="submit"
+            disabled={loading || !username.trim()}
+            className="m-1 mr-1 inline-flex items-center gap-2 rounded-xl bg-gradient-to-tr from-indigo-600 to-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm 
+                       hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed transition"
+          >
+            {loading && (
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-transparent"></span>
+            )}
+            <span>{loading ? "Searching…" : "Search"}</span>
+          </button>
+        </div>
+      </div>
+      {error && (
+        <p className="mt-3 text-center text-sm text-red-600 dark:text-red-400" role="alert">
+          {error}
+        </p>
+      )}
+      <span className="sr-only" aria-live="polite">
+        {loading ? "Searching" : ""}
+      </span>
+    </form>
+  );
+}

@@ -1,51 +1,139 @@
-import React from 'react'
+import React from "react";
 
-const Card = (props) => {
-    return (
-        <div className="px-4 py-5 sm:px-6 -ml-4 -mt-4 border-b border-gray-200 pb-8 flex justify-between items-center flex-wrap sm:flex-no-wrap">
-            <div className="ml-4 mt-4">
-                <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                        <img className="h-14 w-12 rounded-full" src={props.avatar_url} alt="" />
-                    </div>
-                    <div className="ml-4">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                            {props.name !== 0}
-                            <span className="text-sm leading-5 text-gray-500 pl-2">
-                                {props.login ? ' @ ' + props.login : ''}
-                            </span>
-                        </h3>
-                        <p className="text-sm leading-4 text-gray-500">
-                            {props.public_repos ? props.public_repos + ' repositories ' : ''} .  {props.created_at ? 'User since ' + props.created_at  : ''}
-                        </p>
-                        <p className="text-sm leading-5 text-gray-500">
-                            {props.location || ''}
-                        </p>
-                        <p className="mt-1 text-sm leading-5 text-gray-500">
-                            {props.bio}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div className="ml-4 mt-4 flex-shrink-0 flex">
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
-                    <a href={props.html_url}><button type="button" className="mr-2 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-50 active:text-gray-800">
-                        <span>
-                            Profile
-                        </span>
-                    </button>
-                    </a>
-
-
-                    <a href={props.blog}><button type="button" className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-50 active:text-gray-800">
-                        <span>
-                            Website
-                        </span>
-                    </button>
-                    </a>
-                </span>
-            </div>
-        </div>
-    )
+function Stat({ label, value }) {
+  return (
+    <div className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+      {label}: <span className="font-semibold">{value}</span>
+    </div>
+  );
 }
-export default Card
+
+function Row({ icon, children }) {
+  return (
+    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <span className="opacity-70">{icon}</span>
+      <span>{children}</span>
+    </div>
+  );
+}
+
+export default function Card(props) {
+  const {
+    avatar_url,
+    name,
+    login,
+    company,
+    bio,
+    location,
+    followers,
+    following,
+    public_repos,
+    html_url,
+    blog,
+    created_at,
+  } = props;
+
+  const displayName = name || login;
+  const joined = created_at
+    ? new Date(created_at).toLocaleDateString(undefined, { year: "numeric", month: "short" })
+    : null;
+  const blogUrl =
+    blog && (blog.startsWith("http://") || blog.startsWith("https://"))
+      ? blog
+      : blog
+      ? `https://${blog}`
+      : null;
+
+  return (
+    <article
+      className="group relative overflow-hidden rounded-2xl bg-white ring-1 ring-gray-950/5 shadow-sm transition
+                 hover:shadow-md hover:ring-gray-950/10 dark:bg-gray-900 dark:ring-white/10"
+    >
+      <div className="flex items-start gap-4 p-5">
+        <div className="shrink-0">
+          <div className="rounded-full bg-gradient-to-tr from-indigo-500 to-sky-500 p-1">
+            <img
+              src={avatar_url}
+              alt={login ? `${login}'s avatar` : "Avatar"}
+              className="h-16 w-16 rounded-full bg-white object-cover ring-2 ring-white dark:ring-gray-900"
+            />
+          </div>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-baseline gap-2">
+            <a
+              href={html_url}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="truncate text-lg font-semibold text-gray-900 hover:underline dark:text-gray-100"
+              title={displayName}
+            >
+              {displayName}
+            </a>
+            {login && <span className="truncate text-gray-500 dark:text-gray-400">@{login}</span>}
+            {joined && <span className="text-gray-400 dark:text-gray-500">· joined {joined}</span>}
+          </div>
+          {bio && <p className="mt-1 line-clamp-2 text-sm text-gray-700 dark:text-gray-300">{bio}</p>}
+          <div className="mt-2 flex flex-wrap gap-3">
+            {company && (
+              <Row
+                icon={
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 21V4h6v17" />
+                  </svg>
+                }
+              >
+                {company}
+              </Row>
+            )}
+            {location && (
+              <Row
+                icon={
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 21c-4-4-6-7-6-10a6 6 0 1112 0c0 3-2 6-6 10z" />
+                    <circle cx="12" cy="11" r="2" />
+                  </svg>
+                }
+              >
+                {location}
+              </Row>
+            )}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Stat label="Repos" value={public_repos} />
+            <Stat label="Followers" value={followers} />
+            <Stat label="Following" value={following} />
+          </div>
+          <div className="mt-4 flex gap-2">
+            {html_url && (
+              <a
+                href={html_url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center rounded-xl border px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50
+                           dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+              >
+                Profile
+              </a>
+            )}
+            {blogUrl && (
+              <a
+                href={blogUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center rounded-xl border px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50
+                           dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+              >
+                Website
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-0.5 opacity-0 transition-opacity duration-300
+                   group-hover:opacity-100 bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500"
+      />
+    </article>
+  );
+}
